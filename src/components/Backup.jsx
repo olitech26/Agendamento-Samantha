@@ -1,0 +1,10 @@
+import React, { useState } from "react";
+import { supabase, TABELAS_BACKUP } from "../supabaseClient";
+
+export default function Backup({ session }) {
+  const [restaurando,setRestaurando]=useState(false);
+  const isAdmin=session?.perfil==="Administrador"||session?.perfil==="admin"||session?.usuario==="admin"||session?.usuario==="olitech";
+  async function gerarBackup(){if(!isAdmin)return alert("Apenas administrador pode gerar backup."); const backup={criado_em:new Date().toISOString(),sistema:"Agendamentos Olitech",tabelas:{}}; for(const tabela of TABELAS_BACKUP){const {data,error}=await supabase.from(tabela).select("*"); if(!error)backup.tabelas[tabela]=data||[];} const blob=new Blob([JSON.stringify(backup,null,2)],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`backup-agendamentos-olitech-${new Date().toISOString().slice(0,10)}.json`; a.click();}
+  async function restaurarArquivo(e){if(!isAdmin)return alert("Apenas administrador pode restaurar backup."); const file=e.target.files?.[0]; if(!file)return; if(!confirm("A restauração vai inserir os dados do arquivo. Continuar?"))return; setRestaurando(true); const backup=JSON.parse(await file.text()); for(const tabela of TABELAS_BACKUP){const registros=backup.tabelas?.[tabela]||[]; if(registros.length)await supabase.from(tabela).upsert(registros);} setRestaurando(false); alert("Backup restaurado.");}
+  return <div className="card"><h2>💾 Backup e Restauração</h2>{!isAdmin&&<p className="muted">Seu usuário não tem permissão para backup/restauração.</p>}<div className="actions"><button className="btn" onClick={gerarBackup} disabled={!isAdmin}>Gerar backup</button><label className={`btn secondary ${!isAdmin?"disabled":""}`}>Restaurar backup<input type="file" accept=".json,application/json" onChange={restaurarArquivo} disabled={!isAdmin} style={{display:"none"}}/></label></div>{restaurando&&<p>Restaurando...</p>}<p className="muted">Use com cuidado. Apenas administrador.</p></div>;
+}

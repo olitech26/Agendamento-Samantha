@@ -1,0 +1,25 @@
+/* Adicione no final do seu src/style.css */
+.import-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 14px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 16px;
+  background: #f8fafc;
+  margin: 10px 0;
+}
+.import-box p {
+  width: 100%;
+  color: #475569;
+  font-size: 14px;
+}
+textarea {
+  width: 100%;
+  min-height: 90px;
+  border-radius: 12px;
+  border: 1px solid #ccd6e0;
+  padding: 12px;
+  font-size: 14px;
+}

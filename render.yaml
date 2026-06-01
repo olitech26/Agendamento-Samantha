@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: agendamento-samantha
+    env: static
+    buildCommand: npm install --no-package-lock --no-audit --no-fund && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.0
+      - key: NPM_CONFIG_PACKAGE_LOCK
+        value: "false"
+      - key: NPM_CONFIG_AUDIT
+        value: "false"
+      - key: NPM_CONFIG_FUND
+        value: "false"
